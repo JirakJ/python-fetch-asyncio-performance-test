@@ -18,8 +18,15 @@ async def download_all(urls:list):
         await asyncio.gather(*tasks,return_exceptions=True) # the await must be nest inside of the session
 
 url_list = ["https://www.google.com"]*100
-print(url_list)
+
 start = time.time()
-asyncio.run(download_all(url_list))
+loop = asyncio.get_event_loop()
+task = loop.create_task(download_all(url_list))
+
+try:
+    loop.run_until_complete(task)
+except asyncio.CancelledError:
+    pass
+
 end = time.time()
 print(f'download {len(url_list)} links in {end - start} seconds')
